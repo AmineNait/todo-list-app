@@ -4,8 +4,16 @@ import { handleError } from "../utils/errorHandler";
 
 export const getTodos = async (req: Request, res: Response): Promise<void> => {
   try {
-    const todos: ITodo[] = await Todo.find();
-    res.status(200).json(todos);
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const skip = (page - 1) * limit;
+
+    const todos: ITodo[] = await Todo.find().skip(skip).limit(limit);
+    const total = await Todo.countDocuments();
+
+    res
+      .status(200)
+      .json({ todos, total, page, pages: Math.ceil(total / limit) });
   } catch (error) {
     res.status(500).json({ message: handleError(error) });
   }
