@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import styled from "styled-components";
+import { TextField, Button, Box } from "@mui/material";
 import axios from "axios";
 
 interface AddTodoProps {
@@ -22,44 +22,26 @@ const AddTodo: React.FC<AddTodoProps> = ({ onAdd }) => {
   };
 
   return (
-    <StyledAddTodo>
-      <input
-        type="text"
-        placeholder="Title"
+    <Box sx={{ display: "flex", flexDirection: "column", mb: 2 }}>
+      <TextField
+        label="Title"
+        variant="outlined"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
+        sx={{ mb: 2 }}
       />
-      <input
-        type="text"
-        placeholder="Description"
+      <TextField
+        label="Description"
+        variant="outlined"
         value={description}
         onChange={(e) => setDescription(e.target.value)}
+        sx={{ mb: 2 }}
       />
-      <button onClick={handleAddTodo}>Add Todo</button>
-    </StyledAddTodo>
+      <Button variant="contained" color="primary" onClick={handleAddTodo}>
+        Add Todo
+      </Button>
+    </Box>
   );
 };
-
-const StyledAddTodo = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 16px;
-
-  input {
-    margin-bottom: 8px;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-
-  button {
-    padding: 8px;
-    border: none;
-    background-color: #28a745;
-    color: white;
-    cursor: pointer;
-    border-radius: 4px;
-  }
-`;
 
 export default AddTodo;

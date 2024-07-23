@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "styled-components";
+import { Box, Button } from "@mui/material";
 
 interface PaginationProps {
   page: number;
@@ -25,44 +25,33 @@ const Pagination: React.FC<PaginationProps> = ({
   };
 
   return (
-    <StyledPagination>
-      <button onClick={handlePreviousPage} disabled={page === 1}>
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        mt: 2,
+      }}
+    >
+      <Button
+        onClick={handlePreviousPage}
+        disabled={page === 1}
+        variant="contained"
+      >
         Previous
-      </button>
-      <span>
+      </Button>
+      <Box sx={{ mx: 2 }}>
         Page {page} of {totalPages}
-      </span>
-      <button onClick={handleNextPage} disabled={page === totalPages}>
+      </Box>
+      <Button
+        onClick={handleNextPage}
+        disabled={page === totalPages}
+        variant="contained"
+      >
         Next
-      </button>
-    </StyledPagination>
+      </Button>
+    </Box>
   );
 };
-
-const StyledPagination = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20px;
-
-  button {
-    padding: 10px;
-    margin: 0 10px;
-    border: none;
-    background-color: #007bff;
-    color: white;
-    cursor: pointer;
-    border-radius: 4px;
-
-    &:disabled {
-      background-color: #ccc;
-      cursor: not-allowed;
-    }
-  }
-
-  span {
-    margin: 0 10px;
-  }
-`;
 
 export default Pagination;

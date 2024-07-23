@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema } from "mongoose";
+import mongoose, { Document, model, Schema } from "mongoose";
 
 export interface ITodo extends Document {
   title: string;
@@ -6,7 +6,7 @@ export interface ITodo extends Document {
   completed: boolean;
 }
 
-const TodoSchema: Schema = new Schema({
+const todoSchema: Schema = new Schema<ITodo>({
   title: {
     type: String,
     required: true,
@@ -22,4 +22,6 @@ const TodoSchema: Schema = new Schema({
   },
 });
 
-export default mongoose.model<ITodo>("Todo", TodoSchema);
+const Todo = model<ITodo>("Todo", todoSchema);
+
+export default Todo;

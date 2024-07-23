@@ -1,6 +1,14 @@
 import React, { useState } from "react";
-import styled from "styled-components";
-import axios from "axios";
+import {
+  Card,
+  CardContent,
+  CardActions,
+  Typography,
+  Button,
+  TextField,
+  Box,
+} from "@mui/material";
+import axiosInstance from "../../axiosInstance";
 
 interface TodoItemProps {
   id: string;
@@ -24,75 +32,105 @@ const TodoItem: React.FC<TodoItemProps> = ({
   const [newDescription, setNewDescription] = useState(description);
 
   const handleUpdate = async () => {
-    await axios.put(`/api/todos/${id}`, {
-      title: newTitle,
-      description: newDescription,
-      completed,
-    });
-    setIsEditing(false);
-    onUpdate();
+    try {
+      await axiosInstance.put(`/todos/${id}`, {
+        title: newTitle,
+        description: newDescription,
+        completed,
+      });
+      setIsEditing(false);
+      onUpdate();
+    } catch (err) {
+      console.error("Update failed", err);
+    }
   };
 
   const handleDelete = async () => {
-    await axios.delete(`/api/todos/${id}`);
-    onDelete();
+    try {
+      await axiosInstance.delete(`/todos/${id}`);
+      onDelete();
+    } catch (err) {
+      console.error("Delete failed", err);
+    }
+  };
+
+  const handleCancel = () => {
+    setIsEditing(false);
+    setNewTitle(title);
+    setNewDescription(description);
   };
 
   return (
-    <StyledTodoItem>
-      {isEditing ? (
-        <>
-          <input
-            type="text"
-            value={newTitle}
-            onChange={(e) => setNewTitle(e.target.value)}
-          />
-          <input
-            type="text"
-            value={newDescription}
-            onChange={(e) => setNewDescription(e.target.value)}
-          />
-          <button onClick={handleUpdate}>Save</button>
-        </>
-      ) : (
-        <>
-          <h3>{title}</h3>
-          <p>{description}</p>
-          <p>{completed ? "Completed" : "Incomplete"}</p>
-          <button onClick={() => setIsEditing(true)}>Edit</button>
-          <button onClick={handleDelete}>Delete</button>
-        </>
+    <Card
+      variant="outlined"
+      sx={{
+        mb: 2,
+        backgroundColor: completed ? "#d4edda" : "#f0f0f0",
+        maxWidth: "100%",
+      }}
+    >
+      <CardContent>
+        {isEditing ? (
+          <Box>
+            <TextField
+              variant="outlined"
+              label="Title"
+              value={newTitle}
+              onChange={(e) => setNewTitle(e.target.value)}
+              fullWidth
+              sx={{ mb: 2 }}
+            />
+            <TextField
+              variant="outlined"
+              label="Description"
+              value={newDescription}
+              onChange={(e) => setNewDescription(e.target.value)}
+              fullWidth
+              sx={{ mb: 2 }}
+            />
+            <Box display="flex" justifyContent="space-between">
+              <Button
+                onClick={handleUpdate}
+                color="primary"
+                variant="contained"
+              >
+                Save
+              </Button>
+              <Button
+                onClick={handleCancel}
+                color="secondary"
+                variant="outlined"
+              >
+                Cancel
+              </Button>
+            </Box>
+          </Box>
+        ) : (
+          <>
+            <Typography variant="h5" component="div">
+              {title}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              {description}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              {completed ? "Completed" : "Incomplete"}
+            </Typography>
+          </>
+        )}
+      </CardContent>
+      {!isEditing && (
+        <CardActions>
+          <Button onClick={() => setIsEditing(true)} color="primary">
+            Edit
+          </Button>
+          <Button onClick={handleDelete} color="secondary">
+            Delete
+          </Button>
+        </CardActions>
       )}
-    </StyledTodoItem>
+    </Card>
   );
 };
-
-const StyledTodoItem = styled.div`
-  border: 1px solid #ccc;
-  padding: 16px;
-  margin: 16px 0;
-  border-radius: 4px;
-
-  input {
-    margin-bottom: 8px;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-
-  button {
-    margin-right: 8px;
-    padding: 8px;
-    border: none;
-    background-color: #007bff;
-    color: white;
-    cursor: pointer;
-    border-radius: 4px;
-  }
-
-  button:last-child {
-    background-color: #dc3545;
-  }
-`;
 
 export default TodoItem;

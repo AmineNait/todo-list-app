@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import Todo, { ITodo } from "../models/todo";
-import { handleError } from "../utils/errorHandler";
 
 export const getTodos = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -15,7 +14,8 @@ export const getTodos = async (req: Request, res: Response): Promise<void> => {
       .status(200)
       .json({ todos, total, page, pages: Math.ceil(total / limit) });
   } catch (error) {
-    res.status(500).json({ message: handleError(error) });
+    console.error("Error fetching todos:", error);
+    res.status(500).json({ message: "Failed to fetch todos" });
   }
 };
 
@@ -32,7 +32,8 @@ export const createTodo = async (
     const savedTodo: ITodo = await newTodo.save();
     res.status(201).json(savedTodo);
   } catch (error) {
-    res.status(500).json({ message: handleError(error) });
+    console.error("Error creating todo:", error);
+    res.status(500).json({ message: "Failed to create todo" });
   }
 };
 
@@ -53,7 +54,8 @@ export const updateTodo = async (
     }
     res.status(200).json(updatedTodo);
   } catch (error) {
-    res.status(500).json({ message: handleError(error) });
+    console.error("Error updating todo:", error);
+    res.status(500).json({ message: "Failed to update todo" });
   }
 };
 
@@ -70,6 +72,7 @@ export const deleteTodo = async (
     }
     res.status(200).json({ message: "Todo deleted successfully" });
   } catch (error) {
-    res.status(500).json({ message: handleError(error) });
+    console.error("Error deleting todo:", error);
+    res.status(500).json({ message: "Failed to delete todo" });
   }
 };
