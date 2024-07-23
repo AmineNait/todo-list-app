@@ -1,12 +1,21 @@
 import request from "supertest";
 import app from "../app";
 import mongoose from "mongoose";
+import { MongoMemoryServer } from "mongodb-memory-server";
 import Todo from "../models/todo";
 
+let mongoServer: MongoMemoryServer;
 let token: string;
 
 beforeAll(async () => {
-  await mongoose.connect(process.env.MONGODB_URI as string);
+  mongoServer = await MongoMemoryServer.create();
+  const uri = mongoServer.getUri();
+
+  if (mongoose.connection.readyState !== 0) {
+    await mongoose.disconnect();
+  }
+
+  await mongoose.connect(uri);
 
   const userResponse = await request(app).post("/api/register").send({
     email: "test@example.com",
@@ -17,7 +26,8 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-  await mongoose.connection.close();
+  await mongoose.disconnect();
+  await mongoServer.stop();
 });
 
 beforeEach(async () => {
