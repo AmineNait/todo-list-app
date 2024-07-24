@@ -1,6 +1,13 @@
 import React, { useState } from "react";
-import { TextField, Button, Box } from "@mui/material";
-import axios from "axios";
+import {
+  TextField,
+  Button,
+  Box,
+  Card,
+  CardContent,
+  CardActions,
+} from "@mui/material";
+import axiosInstance from "../../axiosInstance";
 
 interface AddTodoProps {
   onAdd: () => void;
@@ -11,36 +18,48 @@ const AddTodo: React.FC<AddTodoProps> = ({ onAdd }) => {
   const [description, setDescription] = useState("");
 
   const handleAddTodo = async () => {
-    await axios.post("/api/todos", {
-      title,
-      description,
-      completed: false,
-    });
-    setTitle("");
-    setDescription("");
-    onAdd();
+    try {
+      await axiosInstance.post("/todos", {
+        title,
+        description,
+        completed: false,
+      });
+      setTitle("");
+      setDescription("");
+      onAdd();
+    } catch (err) {
+      console.error("Add todo failed", err);
+    }
   };
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", mb: 2 }}>
-      <TextField
-        label="Title"
-        variant="outlined"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        sx={{ mb: 2 }}
-      />
-      <TextField
-        label="Description"
-        variant="outlined"
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-        sx={{ mb: 2 }}
-      />
-      <Button variant="contained" color="primary" onClick={handleAddTodo}>
-        Add Todo
-      </Button>
-    </Box>
+    <Card sx={{ mb: 2 }}>
+      <CardContent>
+        <Box display="flex" flexDirection="column">
+          <TextField
+            variant="outlined"
+            label="Title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            fullWidth
+            sx={{ mb: 2 }}
+          />
+          <TextField
+            variant="outlined"
+            label="Description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            fullWidth
+            sx={{ mb: 2 }}
+          />
+        </Box>
+      </CardContent>
+      <CardActions>
+        <Button onClick={handleAddTodo} color="primary" variant="contained">
+          Add Todo
+        </Button>
+      </CardActions>
+    </Card>
   );
 };
 

@@ -39,7 +39,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
         completed,
       });
       setIsEditing(false);
-      onUpdate();
+      onUpdate(); // Ajoutez un point d'arrêt ici pour vérifier si onUpdate() est appelé
     } catch (err) {
       console.error("Update failed", err);
     }
@@ -48,7 +48,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
   const handleDelete = async () => {
     try {
       await axiosInstance.delete(`/todos/${id}`);
-      onDelete();
+      onDelete(); // Ajoutez un point d'arrêt ici pour vérifier si onDelete() est appelé
     } catch (err) {
       console.error("Delete failed", err);
     }
@@ -66,7 +66,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
       sx={{
         mb: 2,
         backgroundColor: completed ? "#d4edda" : "#f0f0f0",
-        maxWidth: "100%",
+        maxWidth: "100%", // Ensure the card takes full width
       }}
     >
       <CardContent>

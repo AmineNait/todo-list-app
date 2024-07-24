@@ -13,15 +13,18 @@ const useFetchTodos = ({ page }: UseFetchTodosProps) => {
     const fetchTodos = async () => {
       try {
         setLoading(true);
-        const response = await axiosInstance.get(`/todos?page=${page}&limit=3`);
+        const response = await axiosInstance.get(
+          `/todos?page=${page}&limit=10`
+        );
         setTodos(response.data.todos || []);
         setTotalPages(response.data.pages);
         setError(null);
       } catch (err) {
         const error = err as Error;
         if (error.message === "Invalid token") {
+          // Rediriger l'utilisateur vers la page de connexion si le token est invalide
           localStorage.removeItem("token");
-          window.location.href = "/login";
+          window.location.href = "/login"; // Ou utilisez votre méthode de redirection
         } else {
           setError("Failed to fetch todos");
         }
